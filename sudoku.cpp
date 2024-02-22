@@ -1,205 +1,162 @@
 #include <iostream>
-#include <vector>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
-class Cell
+const int SIZE = 9;
+
+// Fungsi untuk menampilkan papan Sudoku
+void displayBoard(int board[SIZE][SIZE])
 {
-public:
-    int value;
-    int row;
-    int column;
-    int box;
-
-    Cell(int row, int column, int box) : row(row), column(column), box(box), value(0) {}
-
-    bool setValue(int value)
+    for (int i = 0; i < SIZE; ++i)
     {
-        if (value >= 1 && value <= 4 && isValid(value))
+        for (int j = 0; j < SIZE; ++j)
         {
-            this->value = value;
-            return true;
+            if (board[i][j] == 0)
+            {
+                cout << "  ";
+            }
+            else
+            {
+                cout << setw(2) << board[i][j] << " ";
+            }
+
+            if ((j + 1) % 3 == 0 && j < SIZE - 1)
+            {
+                cout << "| ";
+            }
         }
-        return false;
-    }
-
-    int getValue() const
-    {
-        return value;
-    }
-
-    bool isValid(int value)
-    {
-        for (int i = 0; i < 4; i++)
+        cout << endl;
+        if ((i + 1) % 3 == 0 && i < SIZE - 1)
         {
-            if (board->getCellValue(row, i) == value)
+            cout << "------+-------+------" << endl;
+        }
+    }
+    cout << endl;
+}
+
+// Fungsi untuk memeriksa apakah suatu angka dapat ditempatkan di baris dan kolom tertentu
+bool isSafe(int board[SIZE][SIZE], int row, int col, int num)
+{
+    // Periksa baris
+    for (int i = 0; i < SIZE; ++i)
+    {
+        if (board[row][i] == num)
+        {
+            return false;
+        }
+    }
+
+    // Periksa kolom
+    for (int i = 0; i < SIZE; ++i)
+    {
+        if (board[i][col] == num)
+        {
+            return false;
+        }
+    }
+
+    // Periksa kotak 3x3
+    int startRow = row - row % 3;
+    int startCol = col - col % 3;
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            if (board[i + startRow][j + startCol] == num)
             {
                 return false;
             }
-            if (board->getCellValue(i, column) == value)
+        }
+    }
+
+    return true;
+}
+
+// Fungsi untuk memeriksa apakah papan Sudoku telah selesai
+bool isBoardFull(int board[SIZE][SIZE])
+{
+    for (int i = 0; i < SIZE; ++i)
+    {
+        for (int j = 0; j < SIZE; ++j)
+        {
+            if (board[i][j] == 0)
             {
                 return false;
             }
-            if (board->getCellValue(row - row % 2 + i % 2, column - column % 2 + i % 2) == value)
-            {
-                return false;
-            }
         }
-        return true;
     }
-};
+    return true;
+}
 
-class Board
+// Fungsi untuk memulai permainan Sudoku
+void playSudoku(int board[SIZE][SIZE])
 {
-public:
-    vector<vector<Cell>> cells;
-
-    Board()
+    while (!isBoardFull(board))
     {
-        for (int i = 0; i < 4; i++)
+        cout << "Papan Sudoku saat ini:" << endl;
+        displayBoard(board);
+
+        int row, col, num;
+        cout << "Masukkan baris (1-9), kolom (1-9), dan angka (1-9) yang ingin Anda masukkan (pisahkan dengan spasi): ";
+        cin >> row >> col >> num;
+
+        // Periksa apakah masukan valid
+        if (row < 1 || row > 9 || col < 1 || col > 9 || num < 1 || num > 9)
         {
-            vector<Cell> row;
-            for (int j = 0; j < 4; j++)
-            {
-                row.push_back(Cell(i, j, i / 2 * 2 + j / 2));
-            }
-            cells.push_back(row);
+            cout << "Masukan tidak valid. Coba lagi." << endl;
+            continue;
         }
-    }
 
-    int getCellValue(int row, int column) const
-    {
-        return cells[row][column].getValue();
-    }
+        // Konversi ke indeks array (dimulai dari 0)
+        row--;
+        col--;
 
-    bool setCellValue(int row, int column, int value)
-    {
-        return cells[row][column].setValue(value);
-    }
-
-    bool isBoardValid() const
-    {
-        for (int i = 0; i < 4; i++)
+        // Periksa apakah sel sudah terisi atau tidak aman
+        if (board[row][col] != 0 || !isSafe(board, row, col, num))
         {
-            for (int j = 0; j < 4; j++)
-            {
-                if (!cells[i][j].isValid(cells[i][j].getValue()))
-                {
-                    return false;
-                }
-            }
+            cout << "Tidak dapat memasukkan angka di posisi tersebut. Coba lagi." << endl;
         }
-        return true;
-    }
-};
-
-class Game
-{
-public:
-    Board board;
-    vector<Player> players;
-
-    void startGame()
-    {
-        // Initialize the game
-    }
-
-    void endGame()
-    {
-        // End the game
-    }
-
-    bool validateMove(int row, int column, int value)
-    {
-        return board.setCellValue(row, column, value);
-    }
-};
-
-class Player
-{
-public:
-    string name;
-    int score;
-
-    Player(string name) : name(name), score(0) {}
-
-    void makeMove(int row, int column, int value)
-    {
-        if (board.validateMove(row, column, value))
+        else
         {
-            score++;
+            // Tempatkan angka di sel yang dipilih
+            board[row][col] = num;
         }
     }
 
-    void increaseScore()
-    {
-        score++;
-    }
-};
-
-class Solver
-{
-public:
-    void solveBoard()
-    {
-        // Solve the board
-    }
-
-    bool validateSolution()
-    {
-        return board.isBoardValid();
-    }
-};
-
-class Validator
-{
-public:
-    void validateBoard()
-    {
-        // Validate the board
-    }
-
-    bool validateMove(int row, int column, int value)
-    {
-        return board.validateMove(row, column, value);
-    }
-};
-
-class InputHandler
-{
-public:
-    string getUserInput()
-    {
-        // Get user input
-    }
-
-    bool validateInput(string input)
-    {
-        // Validate user input
-    }
-};
-
-class OutputHandler
-{
-public:
-    void displayBoard()
-    {
-        // Display the board
-    }
-
-    void showErrorMessage(string message)
-    {
-        // Display an error message
-    }
-};
+    cout << "Selamat! Anda telah menyelesaikan Sudoku." << endl;
+    displayBoard(board);
+}
 
 int main()
 {
-    Game game;
-    Player player1("Player 1");
-    game.players.push_back(player1);
-    game.startGame();
+    int board[SIZE][SIZE] = {0}; // Inisialisasi papan Sudoku
+
+    // Isi beberapa sel awal jika diinginkan
+    // Contoh: Letakkan 17 angka pada posisi acak untuk inisialisasi papan
+    srand(static_cast<unsigned>(time(0)));
+    for (int i = 0; i < 20; ++i)
+    {
+        int row = rand() % SIZE;
+        int col = rand() % SIZE;
+        int num = rand() % 9 + 1;
+
+        // Periksa apakah sel sudah terisi atau tidak aman
+        while (board[row][col] != 0 || !isSafe(board, row, col, num))
+        {
+            row = rand() % SIZE;
+            col = rand() % SIZE;
+            num = rand() % 9 + 1;
+        }
+
+        // Tempatkan angka di sel yang dipilih
+        board[row][col] = num;
+    }
+
+    cout << "Selamat datang di permainan Sudoku!" << endl;
+    playSudoku(board);
+
     return 0;
 }
-
-// Path: SudokuCPP/sudoku.h
