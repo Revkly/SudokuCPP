@@ -19,7 +19,7 @@ public:
     bool isValid(int row, int col, int num) const;
     bool solve();
     void generate();
-    void generate(int difficulty); // Tambahkan overload untuk generate dengan difficulty
+    void generate(int difficulty);
     bool isFull() const;
     void reset();
     const std::vector<std::vector<Board>> &getBoard() const;
