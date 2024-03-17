@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <iostream>
 
-int Player::makeMove(const SudokuBoard &board)
+int Player::makeMove(const BoardGenerator &board)
 {
     int row, col, num;
     std::cout << "Enter row, column, and number (1-9) to insert: ";

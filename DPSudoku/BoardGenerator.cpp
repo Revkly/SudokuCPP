@@ -3,13 +3,13 @@
 #include <ctime>
 #include <algorithm>
 
-SudokuBoard::SudokuBoard()
+BoardGenerator::BoardGenerator()
 {
     // Initialize the board with empty cells
     board.resize(9, std::vector<Board>(9));
 }
 
-void SudokuBoard::setValue(int row, int col, int val)
+void BoardGenerator::setValue(int row, int col, int val)
 {
     if (row >= 0 && row < 9 && col >= 0 && col < 9)
     {
@@ -17,7 +17,7 @@ void SudokuBoard::setValue(int row, int col, int val)
     }
 }
 
-int SudokuBoard::getValue(int row, int col) const
+int BoardGenerator::getValue(int row, int col) const
 {
     if (row >= 0 && row < 9 && col >= 0 && col < 9)
     {
@@ -26,7 +26,7 @@ int SudokuBoard::getValue(int row, int col) const
     return 0; // Return 0 if coordinates are out of bounds
 }
 
-void SudokuBoard::setFixed(int row, int col, bool fix)
+void BoardGenerator::setFixed(int row, int col, bool fix)
 {
     if (row >= 0 && row < 9 && col >= 0 && col < 9)
     {
@@ -34,7 +34,7 @@ void SudokuBoard::setFixed(int row, int col, bool fix)
     }
 }
 
-bool SudokuBoard::isFixed(int row, int col) const
+bool BoardGenerator::isFixed(int row, int col) const
 {
     if (row >= 0 && row < 9 && col >= 0 && col < 9)
     {
@@ -43,7 +43,7 @@ bool SudokuBoard::isFixed(int row, int col) const
     return false; // Return false if coordinates are out of bounds
 }
 
-bool SudokuBoard::isValid(int row, int col, int num) const
+bool BoardGenerator::isValid(int row, int col, int num) const
 {
     // Check row and column
     for (int i = 0; i < 9; ++i)
@@ -71,7 +71,7 @@ bool SudokuBoard::isValid(int row, int col, int num) const
     return true;
 }
 
-bool SudokuBoard::solve()
+bool BoardGenerator::solve()
 {
     for (int row = 0; row < 9; ++row)
     {
@@ -98,7 +98,7 @@ bool SudokuBoard::solve()
     return true;
 }
 
-void SudokuBoard::generate()
+void BoardGenerator::generate()
 {
     // Generate an empty board
     solve();
@@ -115,7 +115,7 @@ void SudokuBoard::generate()
     }
 }
 
-void SudokuBoard::generate(int difficulty)
+void BoardGenerator::generate(int difficulty)
 {
     // Generate an empty board
     solve();
@@ -148,7 +148,7 @@ void SudokuBoard::generate(int difficulty)
     }
 }
 
-bool SudokuBoard::isFull() const
+bool BoardGenerator::isFull() const
 {
     for (int i = 0; i < 9; ++i)
     {
@@ -163,7 +163,7 @@ bool SudokuBoard::isFull() const
     return true;
 }
 
-void SudokuBoard::reset()
+void BoardGenerator::reset()
 {
     for (int i = 0; i < 9; ++i)
     {
@@ -174,7 +174,7 @@ void SudokuBoard::reset()
     }
 }
 
-const std::vector<std::vector<Board>> &SudokuBoard::getBoard() const
+const std::vector<std::vector<Board>> &BoardGenerator::getBoard() const
 {
     return board;
 }
