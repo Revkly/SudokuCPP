@@ -1,82 +1,64 @@
-#include <iostream>
 #include "GameManager.h"
+#include "BoardFactory.h"
+#include <iostream>
 
-GameManager::GameManager() {}
-
-void GameManager::initialize(int difficulty)
+GameManager::GameManager(const std::string &playerName, const std::string &difficultyLevel) : player(playerName)
 {
-    board.generate(difficulty);
+    // Menggunakan BoardFactory untuk membuat board berdasarkan tingkat kesulitan
+    board = BoardFactory::createBoard(difficultyLevel);
 }
 
-void GameManager::printBoard() const
+void GameManager::startGame()
 {
-    for (int i = 0; i < 9; ++i)
+    if (!board.isValid())
     {
-        if (i % 3 == 0 && i != 0)
-        {
-            std::cout << "---------------------" << std::endl;
-        }
-        for (int j = 0; j < 9; ++j)
-        {
-            if (j % 3 == 0 && j != 0)
-            {
-                std::cout << "| ";
-            }
-            if (board.getValue(i, j) == 0)
-            {
-                std::cout << ". ";
-            }
-            else
-            {
-                std::cout << board.getValue(i, j) << " ";
-            }
-        }
-        std::cout << std::endl;
+        std::cerr << "Failed to initialize board. Exiting game..." << std::endl;
+        return;
     }
-}
 
-bool GameManager::insertNumber(int row, int col, int num)
-{
-    if (row >= 0 && row < 9 && col >= 0 && col < 9 && num >= 0 && num <= 9)
+    std::cout << "Welcome, " << player.getName() << "!" << std::endl;
+    board.display();
+    while (!checkWin())
     {
-        if (!board.isFixed(row, col) && board.getValue(row, col) == 0)
-        {
-            board.setValue(row, col, num);
-            return true;
-        }
+        playMove();
     }
-    return false;
+    std::cout << "Congratulations, " << player.getName() << "! You've won!" << std::endl;
 }
 
-bool GameManager::removeNumber(int row, int col)
+bool GameManager::validateInput(int row, int col, int num) const
 {
-    if (row >= 0 && row < 9 && col >= 0 && col < 9)
+    if (row < 0 || row >= 9 || col < 0 || col >= 9 || num < 1 || num > 9)
     {
-        if (!board.isFixed(row, col))
-        {
-            board.setValue(row, col, 0);
-            return true;
-        }
+        return false;
     }
-    return false;
+    if (!board.isEmpty(row, col))
+    {
+        return false;
+    }
+    return true;
 }
 
-bool GameManager::isMoveValid(int row, int col, int num) const
+void GameManager::playMove()
 {
-    return board.isValid(row, col, num);
+    int row, col, num;
+    std::cout << "Enter row, column, and number (1-9) to place (e.g., 1 2 3): ";
+    std::cin >> row >> col >> num;
+
+    // Periksa validitas input
+    if (!validateInput(row - 1, col - 1, num))
+    {
+        std::cout << "Invalid move! Please try again." << std::endl;
+        return;
+    }
+
+    // Tempatkan nomor pada board
+    board.placeNumber(row - 1, col - 1, num);
+
+    // Tampilkan board setelah pemain memasukkan nomor
+    board.display();
 }
 
-bool GameManager::isGameOver() const
+bool GameManager::checkWin() const
 {
-    return board.isFull();
-}
-
-void GameManager::resetGame()
-{
-    board.reset();
-}
-
-const BoardGenerator & GameManager::getBoard() const
-{
-    return board;
+    return board.isFilled();
 }

@@ -1,12 +1,20 @@
 #ifndef DIFFICULTY_H
 #define DIFFICULTY_H
 
+#include <string>
+#include <vector>
+
+using namespace std;
+
 class Difficulty
 {
+private:
+    string level;
+
 public:
-    static const int EASY = 1;
-    static const int MEDIUM = 2;
-    static const int HARD = 3;
+    Difficulty(const string &difficultyLevel);
+    string getLevel() const;
+    vector<vector<int>> loadTemplate() const;
 };
 
-#endif
+#endif // DIFFICULTY_H

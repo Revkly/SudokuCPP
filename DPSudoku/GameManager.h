@@ -1,23 +1,25 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
 
-#include "BoardGenerator.h"
+#include "Player.h"
+#include "Board.h"
+#include "Difficulty.h"
+
+using namespace std;
 
 class GameManager
 {
 private:
-    BoardGenerator board;
+    Player player;
+    Board board;
+    Difficulty difficulty;
 
 public:
-    GameManager();
-    void initialize(int difficulty);
-    void printBoard() const;
-    bool insertNumber(int row, int col, int num);
-    bool removeNumber(int row, int col);
-    bool isMoveValid(int row, int col, int num) const;
-    bool isGameOver() const;
-    void resetGame();
-    const BoardGenerator &getBoard() const;
+    GameManager(const string &playerName, const string &difficultyLevel);
+    void startGame();
+    bool validateInput(int row, int col, int num);
+    void playMove();
+    bool checkWin() const;
 };
 
 #endif // GAMEMANAGER_H

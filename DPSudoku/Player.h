@@ -1,13 +1,18 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "BoardGenerator.h"
+#include <string>
+
+using namespace std;
 
 class Player
 {
+private:
+    string name;
+
 public:
-    int makeMove(const BoardGenerator &board);
-    int removeNumber();
+    Player(const string &playerName);
+    string getName() const;
 };
 
 #endif // PLAYER_H
