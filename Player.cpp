@@ -1,6 +1,9 @@
 #include "Player.h"
+#include "SetCommand.h"
+#include "CommandManager.h"
+#include <iostream>
 
-Player::Player(Board &board) : board(board) {}
+Player::Player(Board &board) : board(board), commandManager(std::make_shared<CommandManager>()) {}
 
 void Player::setInput(int row, int col, int value)
 {
@@ -8,7 +11,8 @@ void Player::setInput(int row, int col, int value)
     {
         if (board.isValidMove(row, col, value))
         {
-            board.setCell(row, col, value);
+            auto command = std::make_shared<SetCommand>(board, row, col, value);
+            commandManager->addCommand(command);
             std::cout << "Move set: (" << row + 1 << ", " << col + 1 << ") = " << value << std::endl;
         }
         else
@@ -26,7 +30,8 @@ void Player::removeInput(int row, int col)
 {
     if (board.isCellEditable(row, col))
     {
-        board.setCell(row, col, 0);
+        auto command = std::make_shared<SetCommand>(board, row, col, 0);
+        commandManager->addCommand(command);
         std::cout << "Input removed: (" << row + 1 << ", " << col + 1 << ")" << std::endl;
     }
     else

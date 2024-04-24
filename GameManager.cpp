@@ -18,7 +18,9 @@ void GameManager::displayMenu()
     std::cout << "2. Remove input (row col)\n";
     std::cout << "3. Check win\n";
     std::cout << "4. Display board\n";
-    std::cout << "5. Quit\n";
+    std::cout << "5. Undo\n";
+    std::cout << "6. Redo\n";
+    std::cout << "7. Quit\n";
 }
 
 void GameManager::playRound()
@@ -61,6 +63,14 @@ void GameManager::playRound()
             board.displayBoard();
         }
         else if (choice == 5)
+        {
+            player.getCommandManager()->undo();
+        }
+        else if (choice == 6)
+        {
+            player.getCommandManager()->redo();
+        }
+        else if (choice == 7)
         {
             std::cout << "Goodbye!" << std::endl;
             break;
