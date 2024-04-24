@@ -1,5 +1,7 @@
 #include "GameManager.h"
 #include <iostream>
+#include "Difficulty.h"
+#include "BoardGenerator.h"
 
 GameManager::GameManager() : board(), player(board) {}
 
